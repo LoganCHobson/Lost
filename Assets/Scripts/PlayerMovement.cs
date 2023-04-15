@@ -35,6 +35,12 @@ public class PlayerMovement : MonoBehaviour
         // Move the player
         transform.Translate(new Vector3(moveX, 0, moveZ));
 
+        // Jump
+        if (Input.GetKeyDown(KeyCode.Space) && Mathf.Abs(rb.velocity.y) < 0.01f)
+        {
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        }
+
         // Get mouse input for camera rotation
         float rotX = Input.GetAxis("Mouse X") * mouseSensitivity;
         float rotY = Input.GetAxis("Mouse Y") * mouseSensitivity;
@@ -46,10 +52,5 @@ public class PlayerMovement : MonoBehaviour
         verticalRotation -= rotY;
         verticalRotation = Mathf.Clamp(verticalRotation, -upDownRange, upDownRange);
         cam.transform.localRotation = Quaternion.Euler(verticalRotation, 0, 0);
-
-        if (Input.GetKeyDown(KeyCode.Space) && Mathf.Abs(rb.velocity.y) < 0.01f)
-        {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-        }
     }
 }
