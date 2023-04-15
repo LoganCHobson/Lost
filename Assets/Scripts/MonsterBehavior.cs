@@ -18,6 +18,10 @@ public class MonsterBehavior : MonoBehaviour
 
     public Transform location;
 
+    GameObject audio;
+
+    RaycastHit flashlightHit;
+
     private void Start()
     {
         playerInfo = FindObjectOfType<PlayerInfo>();
@@ -45,14 +49,19 @@ public class MonsterBehavior : MonoBehaviour
                 countDown = 5;
                 break;
         }
-        Scares();
-
         
+        if(Input.GetKeyDown(KeyCode.G))
+        {
+            Scares();
+        }
+
+        FlashLight();
     }
 
     public void Scares()
     {
-        int rand = Random.Range(3, 3);
+        int rand = Random.Range(1, 4);
+        Debug.Log(rand);
        
         switch (rand)
         {
@@ -64,7 +73,7 @@ public class MonsterBehavior : MonoBehaviour
                     gameObject.GetComponentInChildren<Transform>().transform.position,
                     transform.forward,
                     Quaternion.identity,
-                    30f, ~127);
+                    30f);
                
                 
                 if(hit != null && furthestTree == null)
@@ -73,16 +82,20 @@ public class MonsterBehavior : MonoBehaviour
                     float dist2 = 0;
                     foreach(RaycastHit obj in hit)
                     {
-                        //Debug.Log(obj.transform.name);
-                         dist1 = Vector3.Distance(transform.position, obj.transform.position);
-
-                        if(dist1 > dist2)
+                        if (obj.transform.CompareTag("Tree"))
                         {
-                            furthestTree = obj.transform.gameObject;
-                           
-                            dist2 = dist1;
+
+
+                            //Debug.Log(obj.transform.name);
+                            dist1 = Vector3.Distance(transform.position, obj.transform.position);
+
+                            if (dist1 > dist2)
+                            {
+                                furthestTree = obj.transform.gameObject;
+
+                                dist2 = dist1;
+                            }
                         }
-                       
                     }
                     if(furthestTree == null)
                     {
@@ -103,23 +116,30 @@ public class MonsterBehavior : MonoBehaviour
                 break;
                 
             case 2:
-                RaycastHit flashlightHit;
-
-                Physics.Raycast(gameObject.transform.position, transform.forward, out flashlightHit, flashLightRange);
-                Debug.Log(flashlightHit);
-                if (flashlightHit.transform.gameObject.CompareTag("Enemy"))
-                {
-                    flashlightHit.transform.GetComponent<MonsterAIMovement>().scared = true;
-                }
-                else
-                {
-                    return;
-                }
+                FindObjectOfType<MonsterAIMovement>().chase = true;
                 break;
 
             case 3:
-                GameObject audio = Instantiate(prefab, location);
-                audio.GetComponent<AudioSource>().Play();
+                
+                Debug.Log("Case3");
+                bool spawned = false;
+                if(spawned == false)
+                {
+                     audio = Instantiate(prefab, location);
+                    spawned = true;
+                }
+                
+                
+                if(audio.GetComponent<AudioSource>().isPlaying == false)
+                {
+                    audio.GetComponent<AudioSource>().Play();
+                    Debug.Log("Audio played" + audio);
+                }
+               if(audio.GetComponent<AudioSource>().isPlaying == false)
+                {
+                    Destroy(audio);
+                }
+                
 
                 
 
@@ -143,6 +163,23 @@ public class MonsterBehavior : MonoBehaviour
 
         }
 
+    }
+
+    void FlashLight()
+    {
+        
+
+        Physics.Raycast(gameObject.transform.position, transform.forward, out flashlightHit, flashLightRange);
+        Debug.Log(flashlightHit);
+        if (flashlightHit.transform.gameObject.CompareTag("Enemy"))
+        {
+            flashlightHit.transform.GetComponent<MonsterAIMovement>().scared = true;
+        }
+
+        else
+        {
+            return;
+        }
     }
 
 

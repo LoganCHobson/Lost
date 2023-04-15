@@ -53,12 +53,15 @@ public class MonsterAIMovement : MonoBehaviour
                 }
 
                 agent.SetDestination(furthestPoint.transform.position);
-                if(transform.position == furthestPoint.transform.position) 
-                {
-                    scared = false;
-                    furthestPoint = null;
-                    Destroy(gameObject);
-                }
+              
+            }
+
+            if (transform.position == furthestPoint.transform.position)
+            {
+                scared = false;
+                chase = true;
+                furthestPoint = null;
+                // Destroy(gameObject);
             }
         }
     }
