@@ -170,7 +170,7 @@ public class MonsterBehavior : MonoBehaviour
         
 
         Physics.Raycast(gameObject.transform.position, transform.forward, out flashlightHit, flashLightRange);
-        Debug.Log(flashlightHit);
+        //Debug.Log(flashlightHit);
         if (flashlightHit.transform.gameObject.CompareTag("Enemy"))
         {
             flashlightHit.transform.GetComponent<MonsterAIMovement>().scared = true;

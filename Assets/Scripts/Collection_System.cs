@@ -22,9 +22,7 @@ public class Collection_System : MonoBehaviour
             grabbedObj = other.gameObject;
             
             Debug.Log("Picked Up " + grabbedObj);
-            playerInventory.pickup();
-            pickedUp = true;
-            // other.gameObject.SetActive(false);
+            playerInventory.Pickup();           
         }
         else
             return;
@@ -32,12 +30,6 @@ public class Collection_System : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (Input.GetKeyDown(KeyCode.E) && pickedUp)
-        {
-            pickedUp = false;
-            gameObject.SetActive(true);
-        }
-        else
-            return;
+        playerInventory.Drop();
     }
 }
