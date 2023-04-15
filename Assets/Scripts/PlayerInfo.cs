@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public enum FearState { TIER1, TIER2, TIER3, TIER4 }
 
-
 public class PlayerInfo : MonoBehaviour
 {
     public Slider slider;
