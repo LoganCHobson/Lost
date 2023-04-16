@@ -10,6 +10,8 @@ public class MonsterAIMovement : MonoBehaviour
     public bool chase = false;
     public List<GameObject> retreatPoints = new List<GameObject>();
 
+    public AudioSource audio;
+
     GameObject furthestPoint;
     // Start is called before the first frame update
     void Start()
@@ -20,15 +22,34 @@ public class MonsterAIMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if(GetComponent<Rigidbody>().velocity.x != 0 || GetComponent<Rigidbody>().velocity.y != 0 || GetComponent<Rigidbody>().velocity.z != 0)
+        {
+            if(audio.isPlaying == false)
+            {
+                audio.Play();
+            }
+        }
 
         if (chase == true)
         {
             agent.SetDestination(target.position);
+            float distance = Vector3.Distance(transform.position, target.position);
+            if(distance <= 2f)
+            {
+                agent.isStopped = true;
+                GetComponentInChildren<Animator>().SetBool("Attack", true);
+            }
+            else
+            {
+                GetComponentInChildren<Animator>().SetBool("Attack", false);
+                agent.isStopped = false;
+                agent.SetDestination(target.position);
+            }
         }
 
         if (scared == true)
         {
+            GetComponentInChildren<Animator>().SetBool("Attack", false);
             chase = false;
             if (furthestPoint == null)
             {

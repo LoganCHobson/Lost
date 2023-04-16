@@ -9,6 +9,9 @@ public class PlayerMovement : MonoBehaviour
     public float mouseSensitivity = 2.0f;
     public float upDownRange = 60.0f;
 
+    public AudioSource grassWalk;
+    public AudioSource woodWalk;
+
     float verticalRotation = 0;
 
     private Rigidbody rb;
@@ -52,5 +55,36 @@ public class PlayerMovement : MonoBehaviour
         verticalRotation -= rotY;
         verticalRotation = Mathf.Clamp(verticalRotation, -upDownRange, upDownRange);
         cam.transform.localRotation = Quaternion.Euler(verticalRotation, 0, 0);
+
+        
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
+        {
+            if (other.name == "Terrain")
+            {
+                if (!grassWalk.isPlaying)
+                {
+                    grassWalk.Play();
+                }
+            }
+
+            if (other.CompareTag("Floor"))
+            {
+                if (!woodWalk.isPlaying)
+                {
+                    woodWalk.Play();
+                }
+            }
+            else
+            {
+                if (!woodWalk.isPlaying)
+                {
+                    woodWalk.Play();
+                }
+            }
+        }
     }
 }
