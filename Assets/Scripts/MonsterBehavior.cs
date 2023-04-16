@@ -1,50 +1,42 @@
-using UnityEngine;
-using UnityEngine.UI;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class MonsterBehavior : MonoBehaviour
 {
-    public float countDownSet = 40;
-    float countDown;
-    public Slider slider;
-    PlayerInfo playerInfo;
-
-    float maxDistance;
-    public GameObject treeScareAnim;
-    public GameObject furthestTree;
-
-    public float flashLightRange = 20;
+    public LayerMask layerMask;
     public GameObject prefab;
+    public float destroyTime = 10f;
 
-    public Transform location;
+    public GameObject spawnedObject;
+    PlayerInfo playerInfo;
+    MonsterAIMovement monsterAIMovement;
 
-    GameObject audio;
-   public bool treeScare;
+    public float countDown;
+    float countDownSet;
 
-    
+    public Transform soundSpawnLocation;
 
-    [SerializeField]
-    RaycastHit[] hit;
-    
-    RaycastHit flashlightHit;
-    private GameObject spawnedObj;
-
+    public List<GameObject> spookSounds = new List<GameObject>();
     private void Start()
     {
         playerInfo = FindObjectOfType<PlayerInfo>();
+        monsterAIMovement = FindObjectOfType<MonsterAIMovement>();
     }
-
-    void Update()
+    private void Update()
     {
-        
         countDown -= Time.deltaTime;
-        Debug.DrawRay(gameObject.GetComponentInChildren<Transform>().transform.position, gameObject.GetComponentInChildren<Transform>().transform.forward * 30, Color.red);
-        Debug.DrawRay(gameObject.transform.position, gameObject.transform.forward * flashLightRange, Color.yellow);
+
+        if (countDown <= 0)
+        {
+            Scares();
+            countDown = countDownSet;
+        }
+        FlashLight();
+
         switch (playerInfo.state)
         {
             case FearState.TIER1:
                 countDownSet = 20;
-                
                 break;
 
             case FearState.TIER2:
@@ -59,146 +51,78 @@ public class MonsterBehavior : MonoBehaviour
                 countDownSet = 5;
                 break;
         }
-
-        if (countDown <= 0)
-        {
-            Scares();
-            countDown = countDownSet;
-        }
-
-        if(treeScare == true)
-        {
-            TreeScare();
-            float timer = 200f;
-            timer -= Time.deltaTime;
-
-            if(timer <= 0)
-            {
-                
-                treeScare = false;
-                timer = 5;
-            }
-           
-        }
-        
-        FlashLight();
     }
 
-    public void Scares()
+    void Scares()
     {
-        int rand = Random.Range(1, 3);
-        Debug.Log(rand);
-
+        int rand = Random.Range(1, 4);
         switch (rand)
         {
-            case 1: //Tree Scare
-                treeScare = true;
+            case 1:
+                Debug.Log("Case1");
+                TreeScare();
                 break;
 
             case 2:
-                FindObjectOfType<MonsterAIMovement>().chase = true;
+                Debug.Log("Case2");
+                int rand2 = Random.Range(0, spookSounds.Count);
+                AudioSource sound = Instantiate(spookSounds[rand2].GetComponent<AudioSource>(), soundSpawnLocation);
+                if (sound.isPlaying == false)
+                {
+                    sound.Play();
+                    Destroy(sound.gameObject, sound.clip.length + 1);
+                }
+                else
+                {
+                    return;
+                }
                 break;
 
             case 3:
 
-                Debug.Log("Case3");
-                bool spawned = false;
-                if (spawned == false)
-                {
-                    audio = Instantiate(prefab, location);
-                    spawned = true;
-                }
-
-
-                if (audio.GetComponent<AudioSource>().isPlaying == false)
-                {
-                    audio.GetComponent<AudioSource>().Play();
-                    Debug.Log("Audio played" + audio);
-                }
-                if (audio.GetComponent<AudioSource>().isPlaying == false)
-                {
-                    Destroy(audio);
-                }
                 break;
-
-            case 4:
-
-                break;
-
-            case 5:
-
-                break;
-
-            case 6:
-
-                break;
-
-            case 7:
-
-                break;
-
         }
 
-    }
-
-    void FlashLight()
-    {
-        Physics.Raycast(gameObject.transform.position, transform.forward, out flashlightHit, flashLightRange);
-        //Debug.Log(flashlightHit);
-        if (flashlightHit.transform.gameObject.CompareTag("Enemy"))
+        if (playerInfo.slider.value <= 0)
         {
-            flashlightHit.transform.GetComponent<MonsterAIMovement>().scared = true;
-        }
-        else
-        {
-            return;
+            monsterAIMovement.chase = true;
         }
     }
 
     void TreeScare()
     {
-        if (treeScare == true)
+        if (spawnedObject == null)
         {
-            hit = Physics.BoxCastAll(
-                gameObject.GetComponentInChildren<Transform>().transform.position,
-                gameObject.GetComponentInChildren<Transform>().transform.position,
-                transform.forward,
-                Quaternion.identity,
-                30f,  ~(1 << 6));
-           
-            if (hit != null && spawnedObj == null )
-            {
-                float dist1 = 0;
-                float dist2 = 0;
-                foreach (RaycastHit obj in hit)
-                {
-                   
-                        Debug.Log(obj.transform.name);
-                        dist1 = Vector3.Distance(transform.position, obj.transform.position);
+            RaycastHit[] hits = Physics.BoxCastAll(transform.position, Vector3.one * 0.5f, transform.forward, Quaternion.identity, 30f, layerMask);
 
-                        if (dist1 > dist2)
-                        {
-                            dist2 = dist1;
-                            furthestTree = obj.transform.gameObject;
-                        }
+            if (hits.Length > 0)
+            {
+                float farthestDistance = 0f;
+                RaycastHit farthestHit = hits[0];
+
+                foreach (RaycastHit hit in hits)
+                {
+                    float distance = Vector3.Distance(transform.position, hit.point);
+                    if (distance > farthestDistance)
+                    {
+                        farthestDistance = distance;
+                        farthestHit = hit;
                     }
-                
-                if (furthestTree == null)
-                {
-                   // return;
                 }
-                else
-                {
-                    Debug.Log("Furthest tree = " + furthestTree.name);
-                    Vector3 spawnPosition = furthestTree.transform.position - furthestTree.transform.forward * 2;
-                    Quaternion spawnRotation = Quaternion.LookRotation(transform.position - spawnPosition, Vector3.up);
-                    GameObject temp = Instantiate(treeScareAnim, spawnPosition, spawnRotation);
-                    temp.transform.LookAt(playerInfo.gameObject.transform);
-                    spawnedObj = temp;
-                }
-                Destroy(spawnedObj, 10);
-                Debug.Log(hit.Length);
+
+                spawnedObject = Instantiate(prefab, farthestHit.point + (farthestHit.normal * -1.5f) + Vector3.up * 0.5f, Quaternion.LookRotation(-farthestHit.normal));
+                Destroy(spawnedObject, destroyTime);
             }
+        }
+    }
+
+    void FlashLight()
+    {
+        bool warding = Physics.Raycast(transform.position, transform.forward, 30f, 8);
+
+        if (warding)
+        {
+            monsterAIMovement.scared = true;
         }
     }
 
