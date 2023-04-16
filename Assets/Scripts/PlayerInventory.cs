@@ -37,16 +37,6 @@ public class PlayerInventory : MonoBehaviour
             inLeftHand = true;
             grabbedItem.GetComponent<Item_Pickup>().isHeldLeft = inLeftHand;
         }
-        /*if (!inLeftHand && grabbedItem.transform.parent.name != "Right Hand")
-        {
-            Debug.Log("Left Hand!");
-            grabbedItem.transform.position = leftHand.transform.position;
-            grabbedItem.transform.parent = leftHand.transform;
-            grabbedItem.GetComponent<Item_Pickup>().isHeld = inLeftHand;
-            inLeftHand = true;
-        }
-        */
-
     }
     public void Drop()
     {
