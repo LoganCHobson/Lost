@@ -8,6 +8,7 @@ TagManager:
   - Tree
   - Item
   - Consumable
+  - Parts
   layers:
   - Default
   - TransparentFX
@@ -19,7 +20,7 @@ TagManager:
   - Tree
   - Enemy
   - Consumable
-  - 
+  - Parts
   - 
   - 
   - 
