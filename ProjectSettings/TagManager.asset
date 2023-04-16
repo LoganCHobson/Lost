@@ -9,6 +9,7 @@ TagManager:
   - Item
   - Consumable
   - Parts
+  - Floor
   layers:
   - Default
   - TransparentFX
