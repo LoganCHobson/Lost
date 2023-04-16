@@ -5,7 +5,7 @@ using UnityEngine;
 public class Item_Pickup : MonoBehaviour
 {
     private Rigidbody rb;
-    private SphereCollider sc;
+    private Collider col;
     
     public bool isHeldRight;
     public bool isHeldLeft;
@@ -14,7 +14,7 @@ public class Item_Pickup : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
-        sc = GetComponent<SphereCollider>();
+        col = GetComponent<Collider>();
       
         isHeldRight = false;
         isHeldLeft = false;
@@ -26,18 +26,18 @@ public class Item_Pickup : MonoBehaviour
         if (isHeldRight || isHeldLeft)
         {            
             rb.isKinematic = true;
-            sc.isTrigger = false;
+            col.isTrigger = false;
         }
         if (Input.GetKey(KeyCode.X) && isHeldRight)
         {
             rb.isKinematic = false;
-            sc.isTrigger = true;
+            col.isTrigger = true;
             isHeldRight = false;
         }
         if (Input.GetKey(KeyCode.Z) && isHeldLeft)
         {
             rb.isKinematic = false;
-            sc.isTrigger = true;
+            col.isTrigger = true;
             isHeldLeft = false;
         }
     }

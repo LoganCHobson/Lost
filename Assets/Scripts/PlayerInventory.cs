@@ -10,7 +10,7 @@ public class PlayerInventory : MonoBehaviour
     public GameObject rightHand;
     public GameObject leftHand;
 
-
+    private bool consumableUsed;
 
     private void Start()
     {
@@ -28,7 +28,7 @@ public class PlayerInventory : MonoBehaviour
             inRightHand = true;
             grabbedItem.GetComponent<Item_Pickup>().isHeldRight = inRightHand;
         }
-        
+
         else
         {
             Debug.Log("Left Hand!");
@@ -50,5 +50,28 @@ public class PlayerInventory : MonoBehaviour
             leftHand.transform.DetachChildren();
             inLeftHand = false;
         }
+    }
+    private void Update()
+    {
+        if (grabbedItem != null)
+        {
+            if ((grabbedItem.GetComponent<Item_Pickup>().isHeldLeft || grabbedItem.GetComponent<Item_Pickup>().isHeldRight) && grabbedItem.tag == "Consumable")
+            {
+                if (Input.GetKeyDown(KeyCode.H))
+                {
+                    RefillSanity();
+                }
+            }
+        }
+        else
+        {
+            return;
+        }
+    }
+    void RefillSanity()
+    {
+        GetComponent<PlayerInfo>().slider.value = GetComponent<PlayerInfo>().slider.maxValue;
+        consumableUsed = true;
+        Destroy(grabbedItem);
     }
 }

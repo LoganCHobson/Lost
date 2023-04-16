@@ -32,4 +32,6 @@ public class Collection_System : MonoBehaviour
     {
         playerInventory.Drop();
     }
+
+   
 }
