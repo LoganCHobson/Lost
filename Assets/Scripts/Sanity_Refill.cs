@@ -1,13 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public class Sanity_Refill : MonoBehaviour
 {
-    public int maxSanity;
-    public int currentSanity;
-    public int refillAmount;
+    [Header("Sanity Variables")]
+    public float maxSanity;
+    public float currentSanity;
+    public float refillAmount;
     public PlayerInfo playerInfo;
     public PlayerInventory playerInventory;
     public Item_Pickup isHeld;
@@ -15,26 +17,43 @@ public class Sanity_Refill : MonoBehaviour
 
     private void Start()
     {
-        playerInventory = GetComponent<PlayerInventory>();
+        playerInventory = gameObject.GetComponent<PlayerInventory>();
         playerInfo = FindObjectOfType<PlayerInfo>();
+        maxSanity = GetComponent<PlayerInfo>().slider.maxValue;
     }
 
     // Update is called once per frame
     void Update()
     {
-        float x = playerInfo.slider.value;
+        currentSanity = GetComponent<PlayerInfo>().slider.value;
+        //float x = playerInfo.slider.value;
     }
 
-    private void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Consumable" && playerInventory.inLeftHand || playerInventory.inRightHand )
+        if (other.gameObject.tag == "Consumable")
         {
             Debug.Log("Found Pills!");
+            if (playerInventory.inLeftHand || playerInventory.inRightHand == false)
+            {
+                playerInventory.Pickup();
+
+                if (Input.GetKey(KeyCode.E) && playerInventory.inLeftHand || playerInventory.inRightHand)
+                {
+                    RefillSanity();
+                }
+            }
+            
+        }
+
+        else
+        {
+            return;
         }
     }
 
     public void RefillSanity()
     {
-        playerInfo.slider.value = refillAmount;
+        currentSanity = currentSanity += refillAmount;
     }
 }
