@@ -10,7 +10,7 @@ public class MonsterBehavior : MonoBehaviour
     public GameObject spawnedObject;
     PlayerInfo playerInfo;
     MonsterAIMovement monsterAIMovement;
-
+    ParticleSystem partSys;
     public float countDown;
     float countDownSet;
 
@@ -21,6 +21,7 @@ public class MonsterBehavior : MonoBehaviour
     {
         playerInfo = FindObjectOfType<PlayerInfo>();
         monsterAIMovement = FindObjectOfType<MonsterAIMovement>();
+        partSys = GetComponentInChildren<ParticleSystem>();
     }
     private void Update()
     {
@@ -29,7 +30,7 @@ public class MonsterBehavior : MonoBehaviour
         if (countDown <= 0)
         {
             Scares();
-            countDown = countDownSet; 
+            countDown = countDownSet;
         }
         FlashLight();
 
@@ -80,6 +81,12 @@ public class MonsterBehavior : MonoBehaviour
 
             case 3:
 
+                partSys.Play();
+
+                if (partSys.isStopped)
+                {
+                    break;
+                }
                 break;
         }
 
