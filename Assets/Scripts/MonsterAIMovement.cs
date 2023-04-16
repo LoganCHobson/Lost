@@ -10,6 +10,8 @@ public class MonsterAIMovement : MonoBehaviour
     public bool chase = false;
     public List<GameObject> retreatPoints = new List<GameObject>();
 
+    public AudioSource audio;
+
     GameObject furthestPoint;
     // Start is called before the first frame update
     void Start()
@@ -20,7 +22,13 @@ public class MonsterAIMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if(GetComponent<Rigidbody>().velocity.x != 0 || GetComponent<Rigidbody>().velocity.y != 0 || GetComponent<Rigidbody>().velocity.z != 0)
+        {
+            if(audio.isPlaying == false)
+            {
+                audio.Play();
+            }
+        }
 
         if (chase == true)
         {
