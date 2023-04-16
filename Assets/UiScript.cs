@@ -12,4 +12,14 @@ public class UiScript : MonoBehaviour
     {
         Application.Quit();
     }
+
+    private void Update()
+    {
+        if(Cursor.lockState == CursorLockMode.Locked)
+        {
+            Cursor.lockState = CursorLockMode.None;
+        }
+    }
+
+
 }
