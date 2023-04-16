@@ -10,6 +10,9 @@ public class Collection : MonoBehaviour
     {
         if (other.gameObject.name == "Gascan" || other.gameObject.name == "Tire" || other.gameObject.name == "Battery")
         {
+            other.gameObject.GetComponent<Item_Pickup>().isHeldLeft = false;
+            other.gameObject.GetComponent<Item_Pickup>().isHeldRight = false;
+            Destroy(other.gameObject);
             completion++;
         }
     }
