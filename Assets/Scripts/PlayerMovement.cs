@@ -61,19 +61,29 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.name == "Terrain")
+        if (Input.GetAxisRaw("Horizontal") != 0 && Input.GetAxisRaw("Vertical") != 0)
         {
-            if(!grassWalk.isPlaying)
+            if (other.name == "Terrain")
             {
-                grassWalk.Play();
+                if (!grassWalk.isPlaying)
+                {
+                    grassWalk.Play();
+                }
             }
-        }
 
-        if (other.CompareTag("Floor"))
-        {
-            if (!woodWalk.isPlaying)
+            if (other.CompareTag("Floor"))
             {
-                woodWalk.Play();
+                if (!woodWalk.isPlaying)
+                {
+                    woodWalk.Play();
+                }
+            }
+            else
+            {
+                if (!woodWalk.isPlaying)
+                {
+                    woodWalk.Play();
+                }
             }
         }
     }
