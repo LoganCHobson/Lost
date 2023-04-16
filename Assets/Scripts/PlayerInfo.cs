@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public enum FearState { TIER1, TIER2, TIER3, TIER4 }
 
@@ -34,6 +35,10 @@ public class PlayerInfo : MonoBehaviour
             case 0:
                 state = FearState.TIER4;
                 break;
+        }
+        if(slider.value <= 0)
+        {
+            SceneManager.LoadScene("MainMenu");
         }
     }
 }
