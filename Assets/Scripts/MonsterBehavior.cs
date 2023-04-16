@@ -29,7 +29,7 @@ public class MonsterBehavior : MonoBehaviour
         if (countDown <= 0)
         {
             Scares();
-            countDown = countDownSet;
+            countDown = countDownSet; 
         }
         FlashLight();
 
