@@ -25,10 +25,23 @@ public class MonsterAIMovement : MonoBehaviour
         if (chase == true)
         {
             agent.SetDestination(target.position);
+            float distance = Vector3.Distance(transform.position, target.position);
+            if(distance <= 2f)
+            {
+                agent.isStopped = true;
+                GetComponentInChildren<Animator>().SetBool("Attack", true);
+            }
+            else
+            {
+                GetComponentInChildren<Animator>().SetBool("Attack", false);
+                agent.isStopped = false;
+                agent.SetDestination(target.position);
+            }
         }
 
         if (scared == true)
         {
+            GetComponentInChildren<Animator>().SetBool("Attack", false);
             chase = false;
             if (furthestPoint == null)
             {

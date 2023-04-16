@@ -55,7 +55,7 @@ public class MonsterBehavior : MonoBehaviour
 
     void Scares()
     {
-        int rand = Random.Range(1, 4);
+        int rand = Random.Range(1, 1);
         switch (rand)
         {
             case 1:
